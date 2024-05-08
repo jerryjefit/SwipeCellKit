@@ -360,9 +360,17 @@ extension SwipeController: UIGestureRecognizerDelegate {
         
         if gestureRecognizer == panGestureRecognizer,
             let view = gestureRecognizer.view,
-            let gestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
-            let translation = gestureRecognizer.translation(in: view)
-            return abs(translation.y) <= abs(translation.x)
+            let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+            let translation = panGestureRecognizer.translation(in: view)
+            let velocity = panGestureRecognizer.velocity(in: view)
+            
+            // Check for a predominantly horizontal gesture
+            if abs(translation.y) > abs(translation.x) {
+                return false
+            }
+
+            // Allow gesture recognizer to begin only for left swipes
+            return velocity.x < 0
         }
         
         return true
